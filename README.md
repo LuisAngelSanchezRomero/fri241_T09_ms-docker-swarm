@@ -1,151 +1,167 @@
-# 🧩 Microservicio CRUD de Usuarios
+# Microservicio CRUD de Usuarios
 
 Microservicio reactivo desarrollado con **Spring Boot WebFlux** y **MongoDB**, contenerizado con **Docker** y orquestado con **Docker Swarm**.
+
+---
 
 ## Arquitectura
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   Cliente       │───▶│  Usuario API    │───▶│    MongoDB      │
-│  (curl/Postman)│    │ (Spring WebFlux)│    │   (Reactive)    │
+│ (Postman/Curl)  │    │ Spring WebFlux  │    │   Reactive DB   │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
 
-## 🛠️ Stack Tecnológico
+---
 
-- **Backend**: Spring Boot 3.5.13 + WebFlux (Reactivo)
-- **Base de Datos**: MongoDB 7.0
-- **Contenedores**: Docker + Docker Compose
-- **Orquestación**: Docker Swarm
-- **Validación**: Bean Validation
-- **Logging**: SLF4J + Logback
+## Stack Tecnológico
 
-## 📋 Endpoints API
+- **Backend:** Spring Boot 3.5.13 + WebFlux (reactivo)
+- **Base de datos:** MongoDB 7.0
+- **Contenedores:** Docker
+- **Orquestación:** Docker Swarm
+- **Validación:** Bean Validation
+- **Logs:** SLF4J + Logback
+
+---
+
+## Endpoints API
 
 | Método | Endpoint | Descripción |
 |--------|----------|-------------|
-| GET | `/api/usuarios` | Obtener todos los usuarios |
-| GET | `/api/usuarios/{id}` | Obtener usuario por ID |
-| POST | `/api/usuarios` | Crear nuevo usuario |
+| GET | `/api/usuarios` | Listar usuarios |
+| GET | `/api/usuarios/{id}` | Usuario por ID |
+| POST | `/api/usuarios` | Crear usuario |
 | PUT | `/api/usuarios/{id}` | Actualizar usuario |
 | DELETE | `/api/usuarios/{id}` | Eliminar usuario |
 | GET | `/health` | Health check |
 | GET | `/status` | Estado del servicio |
 
-## 🚀 Ejecución Rápida
+---
 
-### Con Docker Compose
+## Ejecución del Proyecto
+
+### 1. Clonar repositorio
+
 ```bash
-# Clonar y entrar al directorio
-cd usuario-service
-
-# Levantar servicios
-docker-compose up -d
-
-# Verificar
-curl http://localhost:8080/health
+git clone <repo>
+cd fri241_T09_ms-docker-swarm
 ```
 
-### Con Docker Swarm
+### 2. Generar el `.jar`
+
 ```bash
-# Construir imagen
-docker build -t usuario-service:latest .
+./mvnw clean package -DskipTests
+```
 
-# Inicializar swarm
+### 3. Construir imagen Docker
+
+```bash
+docker build -t usuario-service .
+```
+
+### 4. Inicializar Swarm
+
+```bash
 docker swarm init
+```
 
-# Desplegar stack
-docker stack deploy -c docker-stack.yml microservice
+### 5. Desplegar stack
 
-# Verificar réplicas
+```bash
+docker stack deploy -c docker-compose.yml microservice
+```
+
+### 6. Ver servicios
+
+```bash
 docker service ls
 ```
 
-## 📊 Modelo de Datos
-
-### Colección: `usuarios`
-```json
-{
-  "_id": "ObjectId",
-  "nombre": "string (2-100 chars)",
-  "correo": "string (email válido, único)"
-}
-```
-
-## 🔧 Variables de Entorno
-
-| Variable | Valor por defecto | Descripción |
-|----------|-------------------|-------------|
-| `MONGO_HOST` | localhost | Host de MongoDB |
-| `MONGO_PORT` | 27017 | Puerto de MongoDB |
-| `MONGO_DATABASE` | usuarios_db | Nombre de la BD |
-| `MONGO_USERNAME` | admin | Usuario de MongoDB |
-| `MONGO_PASSWORD` | admin123 | Contraseña de MongoDB |
-
-## 🐳 Configuración Docker
-
-### Dockerfile
-- **Multi-stage build** (build + runtime)
-- **Usuario no-root** para seguridad
-- **Healthcheck** integrado
-- **Imagen base**: openjdk:17-alpine
-
-### Docker Compose
-- **Red personalizada**: `ms-net`
-- **Volumen persistente**: `mongodb_data`
-- **Healthchecks** para ambos servicios
-- **Dependencias** configuradas
-
-### Docker Swarm
-- **3 réplicas** del API
-- **1 réplica** de MongoDB
-- **Políticas de reinicio** automático
-- **Límites de recursos** configurados
-- **Rolling updates** habilitados
-
-## 🧪 Testing
-
-### Crear usuario
-```bash
-curl -X POST http://localhost:8080/api/usuarios \
-  -H "Content-Type: application/json" \
-  -d '{"nombre":"Juan Pérez","correo":"juan@email.com"}'
-```
-
-### Obtener usuarios
-```bash
-curl http://localhost:8080/api/usuarios
-```
-
-## 📈 Monitoreo
-
-- **Health endpoint**: `/health`
-- **Actuator**: Métricas de Spring Boot
-- **Logs estructurados**: JSON format
-- **Docker healthchecks**: Automáticos
-
-## 🎯 Características Implementadas
-
-✅ **Microservicio CRUD completo**  
-✅ **Stack 100% reactivo** (WebFlux + MongoDB Reactive)  
-✅ **Contenerización** con Docker  
-✅ **Orquestación** con Docker Swarm  
-✅ **Persistencia** con volúmenes  
-✅ **Red personalizada** bridge/overlay  
-✅ **Healthchecks** integrados  
-✅ **Réplicas** y balanceo de carga  
-✅ **Políticas de reinicio** automático  
-✅ **Datos de prueba** precargados  
-
-## 🏆 BONUS Implementados
-
-✅ **Healthchecks** en Dockerfile y Compose  
-✅ **Endpoints** `/health` y `/status`  
-✅ **Políticas de reinicio** automático  
-✅ **Límites de recursos** configurados  
-✅ **Rolling updates** en Swarm  
-✅ **Usuario no-root** para seguridad  
+**Esperado - debe esperar aveces tarda de 10 a 20 segundos:** `3/3 replicas`
 
 ---
 
-**¡Microservicio listo para producción! 🚀**
+## Pruebas
+
+```bash
+curl http://localhost:8080/health
+```
+
+---
+
+## Modelo de Datos
+
+```json
+{
+  "_id": "ObjectId",
+  "nombre": "string",
+  "correo": "string"
+}
+```
+
+---
+
+## Docker
+
+- **Red:** `ms-net`
+- **Volumen:** `mongodb_data`
+- Healthchecks activos
+- Réplicas en Swarm
+
+---
+
+## Limpieza Total del Entorno Docker (PowerShell)
+
+> **IMPORTANTE:** Estos comandos eliminan contenedores, imágenes, redes y volúmenes. Usar solo para limpieza total del entorno de pruebas.
+
+### 1. Salir de Swarm
+
+```powershell
+docker swarm leave --force
+```
+
+### 2. Eliminar contenedores
+
+```powershell
+docker ps -aq | ForEach-Object { docker rm -f $_ }
+```
+
+### 3. Eliminar imágenes
+
+```powershell
+docker images -aq | ForEach-Object { docker rmi -f $_ }
+```
+
+### 4. Limpiar redes y volúmenes
+
+```powershell
+docker network prune -f
+docker volume prune -f
+```
+
+### 5. Limpieza total del sistema
+
+```powershell
+docker system prune -a --volumes -f
+```
+
+### 6. (Opcional) Eliminar stack activo
+
+```powershell
+docker stack rm microservice
+```
+
+---
+
+## Verificación Final
+
+```powershell
+docker ps -a
+docker images
+docker volume ls
+docker network ls
+```
+
+> Si la limpieza fue correcta, la mayoría de resultados deberían estar vacíos.
