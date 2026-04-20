@@ -1,0 +1,31 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: usuario-service
+  
+  data:
+    mongodb:
+      host: ${MONGO_HOST}
+      port: ${MONGO_PORT:27017}
+      database: ${MONGO_DATABASE:usuarios_db}
+      username: ${MONGO_USERNAME:admin}
+      password: ${MONGO_PASSWORD:admin123}
+      authentication-database: admin
+
+logging:
+  level:
+    com.reto.usuario_service: DEBUG
+    org.springframework.data.mongodb: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
