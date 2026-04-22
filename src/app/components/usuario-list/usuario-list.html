@@ -1,0 +1,81 @@
+<div class="container">
+  <div class="header">
+    <h1> Gestión de Usuarios</h1>
+    <button class="btn-primary" routerLink="/usuarios/nuevo">
+       Nuevo Usuario
+    </button>
+  </div>
+
+  <!-- Barra de búsqueda -->
+  <div class="search-bar">
+    <input
+      type="text"
+      placeholder="🔍 Buscar por nombre o correo..."
+      [(ngModel)]="searchTerm"
+      (input)="filtrarUsuarios()"
+      class="search-input"
+    />
+  </div>
+
+  <!-- Estado de carga -->
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Cargando usuarios...</p>
+  </div>
+
+  <!-- Mensaje de error -->
+  <div *ngIf="error" class="error-message">
+     {{ error }}
+    <button (click)="cargarUsuarios()" class="btn-retry">Reintentar</button>
+  </div>
+
+  <!-- Tabla de usuarios -->
+  <div *ngIf="!loading && !error" class="table-container">
+    <table class="usuario-table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Correo Electrónico</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let usuario of filteredUsuarios">
+          <td>
+            <strong>{{ usuario.nombre }}</strong>
+          </td>
+          <td>{{ usuario.correo }}</td>
+          <td class="actions">
+            <button class="btn-view" (click)="verDetalles(usuario)" title="Ver detalles">
+              
+            </button>
+            <button class="btn-edit" [routerLink]="['/usuarios/editar', usuario.id]" title="Editar">
+            </button>
+            <button class="btn-delete" (click)="eliminarUsuario(usuario.id)" title="Eliminar">
+            </button>
+          </td>
+        </tr>
+        <tr *ngIf="filteredUsuarios.length === 0">
+          <td colspan="3" class="empty-state">
+             No hay usuarios registrados
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal de detalles -->
+  <div class="modal" *ngIf="showModal" (click)="cerrarModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Detalles del Usuario</h2>
+        <button class="close-btn" (click)="cerrarModal()">✖</button>
+      </div>
+      <div class="modal-body" *ngIf="selectedUsuario">
+        <p><strong>ID:</strong> {{ selectedUsuario.id }}</p>
+        <p><strong>Nombre:</strong> {{ selectedUsuario.nombre }}</p>
+        <p><strong>Correo:</strong> {{ selectedUsuario.correo }}</p>
+      </div>
+    </div>
+  </div>
+</div>
