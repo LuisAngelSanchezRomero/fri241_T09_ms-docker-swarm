@@ -55,10 +55,14 @@ cd fri241_T09_ms-docker-swarm
 ./mvnw clean package -DskipTests
 ```
 
-### 3. Construir imagen Docker
+### 3. Construir imagen Docker be - fe
 
 ```bash
 docker build -t usuario-service .
+```
+
+```bash
+docker build -t usuario-frontend:latest .
 ```
 
 ### 4. Inicializar Swarm
